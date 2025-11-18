@@ -105,6 +105,18 @@ config MPS3R
     default y
     depends on TCG && ARM
 
+config HORIZON_J6M
+    bool
+    default y
+    depends on TCG && ARM
+    select ARM_GIC
+    select ARM_TIMER
+    select CMSDK_APB_DUALTIMER
+    select CMSDK_APB_UART
+    select CMSDK_APB_WATCHDOG
+    select OR_IRQ
+    select UNIMP
+
 config MUSCA
     bool
     default y
