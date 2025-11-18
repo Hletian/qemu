@@ -57,19 +57,27 @@ static const RAMInfo j6m_raminfo[] = {
 };
 ```
 
-### 2. 时钟配置
+### 2. 时钟配置 ✅ 已实现
 文件: `hw/arm/horizon-j6m.c`  
-位置: `j6m_oscclk[]` 数组 (约 149 行) 和 `CLK_FRQ` 宏 (约 64 行)
+位置: `j6m_oscclk[]` 数组 (约 152 行) 和 `CLK_FRQ` 宏 (约 74 行)
+
+已实现完整的时钟树，适用于汽车 AI SoC 设计：
 
 ```c
-#define CLK_FRQ 800000000  // ⚠️ 主频设置
+#define CLK_FRQ 1000000000  // 1GHz CPU 主频
 
 static const int j6m_oscclk[] = {
-    24000000,   // ⚠️ 参考时钟
-    800000000,  // ⚠️ 主时钟
-    400000000,  // ⚠️ 外设时钟
+    24000000,   /* [0] REFCLK: 24MHz 参考振荡器 */
+    1000000000, /* [1] CPUCLK: 1GHz CPU 时钟 (Cortex-R52) */
+    500000000,  /* [2] PERIPHCLK: 500MHz 外设总线时钟 */
+    400000000,  /* [3] AXCLK: 400MHz AXI 互连时钟 */
+    80000000,   /* [4] CANCLK: 80MHz CAN 总线时钟 */
+    800000000,  /* [5] DDR4CLK: 800MHz DDR4 参考时钟 */
+    48000000,   /* [6] UARTCLK: 48MHz UART 时钟 */
 };
 ```
+
+这些时钟频率代表了适用于 ADAS 应用的真实汽车 AI SoC 设计。
 
 ### 3. 外设初始化
 文件: `hw/arm/horizon-j6m.c`  

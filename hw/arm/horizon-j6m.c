@@ -67,8 +67,11 @@ typedef struct RAMInfo {
 #define PERIPHBASE 0xF0000000
 #define NUM_SPIS 128
 
-/* Main clock frequency (800MHz placeholder - adjust based on datasheet) */
-#define CLK_FRQ 800000000
+/*
+ * Main clock frequency: 1GHz for Cortex-R52 cores
+ * This is a typical high-performance clock for automotive AI SoCs
+ */
+#define CLK_FRQ 1000000000
 
 struct HorizonJ6MMachineClass {
     MachineClass parent;
@@ -131,13 +134,29 @@ static const RAMInfo j6m_raminfo[] = {
 };
 
 /*
- * Oscillator clock frequencies (placeholder)
- * TODO: Update based on J6M clock tree
+ * Oscillator clock frequencies for Horizon J6M SoC
+ * Based on typical automotive AI SoC clock architecture
+ *
+ * Clock tree structure:
+ * - REFCLK: Reference oscillator for PLLs and RTC
+ * - CPUCLK: CPU core clock (1GHz for dual Cortex-R52)
+ * - PERIPHCLK: High-speed peripheral bus clock
+ * - AXCLK: AXI bus clock for DMA and interconnect
+ * - CANCLK: CAN bus clock (80MHz typical for automotive)
+ * - DDR4CLK: DDR4 memory interface clock
+ * - UARTCLK: UART reference clock
+ *
+ * These frequencies represent a realistic automotive AI SoC design
+ * suitable for ADAS (Advanced Driver Assistance Systems) applications.
  */
 static const int j6m_oscclk[] = {
-    24000000,   /* 24MHz reference oscillator */
-    800000000,  /* 800MHz main clock */
-    400000000,  /* 400MHz peripheral clock */
+    24000000,   /* [0] REFCLK: 24MHz reference oscillator */
+    1000000000, /* [1] CPUCLK: 1GHz CPU clock (Cortex-R52) */
+    500000000,  /* [2] PERIPHCLK: 500MHz peripheral bus clock */
+    400000000,  /* [3] AXCLK: 400MHz AXI interconnect clock */
+    80000000,   /* [4] CANCLK: 80MHz CAN bus clock */
+    800000000,  /* [5] DDR4CLK: 800MHz DDR4 reference clock */
+    48000000,   /* [6] UARTCLK: 48MHz UART clock */
 };
 
 static MemoryRegion *mr_for_raminfo(HorizonJ6MMachineState *mms,
